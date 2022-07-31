@@ -41,9 +41,9 @@
 
 <div class="navBar">
     <ul class="navigation li" style="list-style: none;">
-        <li id="analysis1" onclick="triggerTransition()">Analysis 1</li>
-        <li id="analysis2">Analysis 2</li>
-        <li id="analysis3">Analysis 3</li>
+        <li id="analysis1" onclick="triggerTransition1()">Analysis 1</li>
+        <li id="analysis2" onclick="triggerTransition2()">Analysis 2</li>
+        <li id="analysis3" onclick="triggerTransition3()">Analysis 3</li>
     </ul>
  </div>
 
@@ -98,16 +98,126 @@ d3.select("#svg1").append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -80)
     .attr("y", 20)
-    .text("Average Highway MPG")
-  
-}
+    .text("Average Highway MPG");
 
-function triggerTransition(){
+const data2 = data.filter(function(d) { return d.Fuel == "Diesel"});
+
+var x2 = d3.scaleLog().domain([20,50]).range([0, 200]);
+var y2 = d3.scaleLog().domain([20,50]).range([200, 0]);
+
+d3.select("#svg2").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data2).enter().append("circle")
+.attr("cx", (d, i) => x2(data2[i].AverageCityMPG))
+.attr("cy", (d, i) => y2(data2[i].AverageHighwayMPG))
+.attr("r", (d, i) => 2 + Number.parseInt(data2[i].EngineCylinders))
+.attr("fill", function(d,i) {
+    if (data2[i].Fuel == "Gasoline") {
+      return "#71c7ec";
+    } else if (data2[i].Fuel == "Diesel") {
+      return "#F01B0F";
+    }
+    return "#4BEC13";
+  })
+.on("mouseover", function(d,i){
+  tooltip.style("opacity",1)
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "px")
+  .html("Make: " + data[i].Make);
+  })
+  .on("mouseout", function() {tooltip.style("opacity",0)});
+
+d3.select("#svg2").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y2).tickValues([20,30,40,50]).tickFormat(d3.format("~s")));
+
+d3.select("#svg2").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x2).tickValues([20,30,40,50]).tickFormat(d3.format("~s")));
+
+d3.select("#svg2").append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 200)
+    .attr("y", 300)
+    .text("Diesel Average City MPG");
+    
+d3.select("#svg2").append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -80)
+    .attr("y", 20)
+    .text("Diesel Average Highway MPG");
+  
+
+function triggerTransition1(){
   d3.select("#svg1")
     .transition()
     .delay(100)
     .duration(2000)
     .attr("width", "400")
+};
+
+function triggerTransition2(){
+  d3.select("#svg2")
+    .transition()
+    .delay(100)
+    .duration(2000)
+    .attr("width", "400")
+};
+
+const data3 = data.filter(function(d) { return d.Fuel != "Electricity"});
+
+var x3 = d3.scaleLog().domain([2,12]).range([0, 200]);
+var y3 = d3.scaleLog().domain([10,50]).range([200, 0]);
+
+d3.select("#svg3").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data3).enter().append("circle")
+.attr("cx", (d, i) => x3(data3[i].EngineCylinders))
+.attr("cy", (d, i) => y3(data3[i].AverageHighwayMPG))
+.attr("r", (d, i) => 2 )
+.attr("fill", function(d,i) {
+    if (data3[i].Fuel == "Gasoline") {
+      return "#71c7ec";
+    } else if (data3[i].Fuel == "Diesel") {
+      return "#F01B0F";
+    }
+    return "#4BEC13";
+  })
+.on("mouseover", function(d,i){
+  tooltip.style("opacity",1)
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "px")
+  .html("Make: " + data3[i].Make);
+  })
+  .on("mouseout", function() {tooltip.style("opacity",0)});
+
+d3.select("#svg3").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y3).tickValues([10,20,30,40,50]).tickFormat(d3.format("~s")));
+
+d3.select("#svg3").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x3).tickValues([2,3,4,6,8,10,12]).tickFormat(d3.format("~s")));
+
+d3.select("#svg3").append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 200)
+    .attr("y", 300)
+    .text("Engine Cylinders");
+    
+d3.select("#sv3").append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -80)
+    .attr("y", 20)
+    .text("Diesel Average Highway MPG");
+  
+
+function triggerTransition1(){
+  d3.select("#svg1")
+    .transition()
+    .delay(100)
+    .duration(2000)
+    .attr("width", "400")
+};
+
+function triggerTransition2(){
+  d3.select("#svg2")
+    .transition()
+    .delay(100)
+    .duration(2000)
+    .attr("width", "400")
+};
+
 }
 
 </script>
