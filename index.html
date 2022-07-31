@@ -1,4 +1,5 @@
 <html>
+<h1>Fuel Economy Analysis</h1>
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <style> circle {stroke: black;} 
   #tooltip {
@@ -11,9 +12,43 @@
     border: 0px;
     font-size: 13px;
   }
+ .navigation li {
+    color: #999;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+    padding: 10px 15px;
+    border-top: solid 1px #CCC;
+    border-bottom: solid 1px #CCC;
+    border-left: solid 1px #CCC;
+    background: #f9f9f9;
+    margin: 0 0;
+}
+.navigation li:first-of-type {
+    border-radius: 4px 0 0 4px;
+}
+.navigation li:last-of-type {
+    border-right: solid 1px #CCC;
+    border-radius: 0 4px 4px 0;
+}
+.navigation li.selected {
+    color: #000;
+    background: #e9e9e9;
+    border-color: #AAA;
+    box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
 </style>
+
+<div class="navBar">
+    <ul class="navigation li" style="list-style: none;">
+        <li id="analysis1">Analysis 1</li>
+        <li id="analysis2">Analysis 2</li>
+        <li id="analysis3">Analysis 3</li>
+    </ul>
+ </div>
+
 <body onload='init()'>
-<svg width=300 height=300></svg>
+<svg width=400 height=400></svg>
 <div id="tooltip"></div>
 <script>
 async function init() {
@@ -50,6 +85,19 @@ d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").select
 d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
 
 d3.select("svg").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
+
+d3.select("svg").append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 200)
+    .attr("y", 300)
+    .text("AverageCityMPG");
+    
+d3.select("svg").append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -80)
+    .attr("y", 20)
+    .text("AverageHighwayMPG")
   
 }
 </script>
