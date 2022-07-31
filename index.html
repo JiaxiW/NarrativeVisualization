@@ -15,7 +15,15 @@ const data = await d3.csv("https://flunky.github.io/cars2017.csv");
 d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data).enter().append("circle")
 .attr("cx", (d, i) => x(data[i].AverageCityMPG))
 .attr("cy", (d, i) => y(data[i].AverageHighwayMPG))
-.attr("r", (d, i) => 2 + Number.parseInt(data[i].EngineCylinders));
+.attr("r", (d, i) => 2 + Number.parseInt(data[i].EngineCylinders))
+.on("mouseover", function(d,i){
+  tooltip.style("opacity",1)
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "py")
+  .html("Item #" + i + " is " + d);
+  })
+  .on("mouseout", function() {tooltip.style("opacity",0)})
+  ;
 
 d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
 
