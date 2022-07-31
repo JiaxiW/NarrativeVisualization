@@ -192,14 +192,14 @@ d3.select("#svg3").append("text")
     .attr("text-anchor", "end")
     .attr("x", 200)
     .attr("y", 300)
-    .text("Engine Cylinders");
+    .text("Number of Engine Cylinders");
     
-d3.select("#sv3").append("text")
+d3.select("#svg3").append("text")
     .attr("text-anchor", "end")
     .attr("transform", "rotate(-90)")
     .attr("x", -80)
     .attr("y", 20)
-    .text("Diesel Average Highway MPG");
+    .text("Average Highway MPG");
   
 
 function triggerTransition1(){
@@ -212,6 +212,14 @@ function triggerTransition1(){
 
 function triggerTransition2(){
   d3.select("#svg2")
+    .transition()
+    .delay(100)
+    .duration(2000)
+    .attr("width", "400")
+};
+
+function triggerTransition3(){
+  d3.select("#svg3")
     .transition()
     .delay(100)
     .duration(2000)
