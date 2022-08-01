@@ -42,20 +42,20 @@
 
 <div class="navBar">
     <ul class="navigation li" style="list-style: none;">
-        <li id="analysis1" onclick="triggerTransition1()">Overview</li>
-        <li id="analysis2" onclick="triggerTransition2()">Gasoline</li>
-        <li id="analysis3" onclick="triggerTransition3()">Diesel</li>
+        <li id="analysis1">Gasoline</li>
+        <li id="analysis2">Diesel</li>
+        <li id="analysis3">Electricity</li>
     </ul>
  </div>
 
 <body onload='init()'>
-<svg width=500 height=500 id="svg1"></svg>
-<svg width=500 height=500 id="svg2"></svg>
-<svg width=500 height=500 id="svg3"></svg>
+<svg width=500 height=500></svg>
 <div id="tooltip"></div>
 
 <script>
 async function init() {
+
+const data = await d3.csv("https://flunky.github.io/cars2017.csv");
 
 //first graph
 var x = d3.scaleLog().domain([10,150]).range([0, 200]);
@@ -63,44 +63,90 @@ var y = d3.scaleLog().domain([10,150]).range([200, 0]);
   
 var tooltip = d3.select("#tooltip");
 
-const data = await d3.csv("https://flunky.github.io/cars2017.csv");
+const data1 = data.filter(function(d) { return d.Fuel == "Gasoline"});
 
-d3.select("#svg1").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data).enter().append("circle")
-.attr("cx", (d, i) => x(data[i].AverageCityMPG))
-.attr("cy", (d, i) => y(data[i].AverageHighwayMPG))
+d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data1).enter().append("circle")
+.attr("cx", (d, i) => x(data1[i].AverageCityMPG))
+.attr("cy", (d, i) => y(data1[i].AverageHighwayMPG))
 .attr("r", 3)
-.attr("fill", function(d,i) {
-    if (data[i].Fuel == "Gasoline") {
-      return "#71c7ec";
-    } else if (data[i].Fuel == "Diesel") {
-      return "#F01B0F";
-    }
-    return "#4BEC13";
-  })
+.attr("fill","#71c7ec")
 .on("mouseover", function(d,i){
   tooltip.style("opacity",1)
   .style("left", (d3.event.pageX) + "px")
   .style("top", (d3.event.pageY) + "px")
-  .html("Make: " + data[i].Make);
+  .html("Make: " + data1[i].Make);
   })
   .on("mouseout", function() {tooltip.style("opacity",0)});
 
-d3.select("#svg1").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
+d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
 
-d3.select("#svg1").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
+d3.select("svg").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
 
-d3.select("#svg1").append("text")
+d3.select("svg").append("text")
     .attr("text-anchor", "end")
     .attr("x", 200)
     .attr("y", 300)
     .text("Average City MPG");
     
-d3.select("#svg1").append("text")
+d3.select("svg").append("text")
     .attr("text-anchor", "end")
     .attr("transform", "rotate(-90)")
     .attr("x", -80)
     .attr("y", 20)
     .text("Average Highway MPG");
+
+
+//second graph
+
+d3.select("#analysis2").on("click", function() {
+        d3.selectAll("circle").remove();
+        updateGraph2();
+    });
+
+function updateGraph2(){
+
+const data2 = data.filter(function(d) { return d.Fuel == "Diesel"});
+
+d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data2).enter().append("circle")
+.attr("cx", (d, i) => x(data2[i].AverageCityMPG))
+.attr("cy", (d, i) => y(data2[i].AverageHighwayMPG))
+.attr("r", 3)
+.attr("fill", "#F01B0F")
+.on("mouseover", function(d,i){
+  tooltip.style("opacity",1)
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "px")
+  .html("Make: " + data1[i].Make);
+  })
+  .on("mouseout", function() {tooltip.style("opacity",0)});
+
+}
+
+
+//third graph
+
+d3.select("#analysis3").on("click", function() {
+        d3.selectAll("circle").remove();
+        d3.selectAll(".annotations").remove();
+        updateGraph3();
+    });
+
+function updateGraph3(){
+
+const data3 = data.filter(function(d) { return d.Fuel == "Electricity"});
+
+d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data3).enter().append("circle")
+.attr("cx", (d, i) => x(data3[i].AverageCityMPG))
+.attr("cy", (d, i) => y(data3[i].AverageHighwayMPG))
+.attr("r", 3)
+.attr("fill", "#4BEC13")
+.on("mouseover", function(d,i){
+  tooltip.style("opacity",1)
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "px")
+  .html("Make: " + data3[i].Make);
+  })
+  .on("mouseout", function() {tooltip.style("opacity",0)});
 
 const annotations = [{
     note: {
@@ -119,121 +165,42 @@ const makeAnnotations = d3.annotation()
                           .type(d3.annotationLabel)
                           .notePadding(15)
                           .annotations(annotations);
-
-d3.select("#svg1")
+                          
+d3.select("svg")
          .append("g")
           .attr("class", "annotation-group")
           .style("font-size", 9)
           .call(makeAnnotations);
 
-//second graph
+}
 
-const data2 = data.filter(function(d) { return d.Fuel == "Gasoline"});
 
-var x2 = d3.scaleLog().domain([2,12]).range([0, 200]);
-var y2 = d3.scaleLog().domain([10,50]).range([200, 0]);
+d3.select("#analysis1").on("click", function() {
+        d3.selectAll("circle").remove();
+        d3.selectAll(".annotations").remove();
+        updateGraph1();
+    });
 
-d3.select("#svg2").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data2).enter().append("circle")
-.attr("cx", (d, i) => x2(data2[i].EngineCylinders))
-.attr("cy", (d, i) => y2(data2[i].AverageHighwayMPG))
-.attr("r", 4)
-.attr("fill", function(d,i) {
-    if (data2[i].Fuel == "Gasoline") {
-      return "#71c7ec";
-    } else if (data2[i].Fuel == "Diesel") {
-      return "#F01B0F";
-    }
-    return "#4BEC13";
-  })
-.on("mouseover", function(d,i){
-  tooltip.style("opacity",1)
-  .style("left", (d3.event.pageX) + "px")
-  .style("top", (d3.event.pageY) + "px")
-  .html("Make: " + data[i].Make);
-  })
-  .on("mouseout", function() {tooltip.style("opacity",0)});
+function updateGraph1(){
 
-d3.select("#svg2").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y2).tickValues([20,30,40,50]).tickFormat(d3.format("~s")));
+const data1 = data.filter(function(d) { return d.Fuel == "Gasoline"});
 
-d3.select("#svg2").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x2).tickValues([2,3,4,6,8,10,12]).tickFormat(d3.format("~s")));
-
-d3.select("#svg2").append("text")
-    .attr("text-anchor", "end")
-    .attr("x", 200)
-    .attr("y", 300)
-    .text("Number of Engine Cylinders");
-    
-d3.select("#svg2").append("text")
-    .attr("text-anchor", "end")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -80)
-    .attr("y", 20)
-    .text("Average Highway MPG");
-  
-
-const data3 = data.filter(function(d) { return d.Fuel == "Diesel"});
-
-d3.select("#svg3").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data3).enter().append("circle")
-.attr("cx", (d, i) => x2(data3[i].EngineCylinders))
-.attr("cy", (d, i) => y2(data3[i].AverageHighwayMPG))
+d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll("circle").data(data1).enter().append("circle")
+.attr("cx", (d, i) => x(data1[i].AverageCityMPG))
+.attr("cy", (d, i) => y(data1[i].AverageHighwayMPG))
 .attr("r", 3)
-.attr("fill", function(d,i) {
-    if (data3[i].Fuel == "Gasoline") {
-      return "#71c7ec";
-    } else if (data3[i].Fuel == "Diesel") {
-      return "#F01B0F";
-    }
-    return "#4BEC13";
-  })
+.attr("fill","#71c7ec")
 .on("mouseover", function(d,i){
   tooltip.style("opacity",1)
   .style("left", (d3.event.pageX) + "px")
   .style("top", (d3.event.pageY) + "px")
-  .html("Make: " + data3[i].Make);
+  .html("Make: " + data1[i].Make);
   })
   .on("mouseout", function() {tooltip.style("opacity",0)});
 
-d3.select("#svg3").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(y2).tickValues([10,20,30,40,50]).tickFormat(d3.format("~s")));
+}
 
-d3.select("#svg3").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(x2).tickValues([2,3,4,6,8,10,12]).tickFormat(d3.format("~s")));
 
-d3.select("#svg3").append("text")
-    .attr("text-anchor", "end")
-    .attr("x", 200)
-    .attr("y", 300)
-    .text("Number of Engine Cylinders");
-    
-d3.select("#svg3").append("text")
-    .attr("text-anchor", "end")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -80)
-    .attr("y", 20)
-    .text("Average Highway MPG");
-  
-
-function triggerTransition1(){
-  d3.select("#svg1")
-    .transition()
-    .delay(100)
-    .duration(2000)
-    .attr("width", "400")
-};
-
-function triggerTransition2(){
-  d3.select("#svg2")
-    .transition()
-    .delay(100)
-    .duration(2000)
-    .attr("width", "400")
-};
-
-function triggerTransition3(){
-  d3.select("#svg3")
-    .transition()
-    .delay(100)
-    .duration(2000)
-    .attr("width", "400")
-};
 
 }
 
