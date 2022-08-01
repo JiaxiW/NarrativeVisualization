@@ -96,10 +96,36 @@ d3.select("svg").append("text")
     .text("Average Highway MPG");
 
 
+const annotations = [{
+    note: {
+        label: "Gasoline cars have the worst fuel efficiency.",
+        title: "Gasoline",
+        wrap: 100
+            },
+    color: ["#71c7ec"],
+    x:200,
+    y:180,
+    dx: 30, 
+    dy: 30
+}];
+
+const makeAnnotations = d3.annotation()
+                          .type(d3.annotationLabel)
+                          .notePadding(15)
+                          .annotations(annotations);
+                          
+d3.select("svg")
+         .append("g")
+          .attr("class", "annotation-group")
+          .style("font-size", 9)
+          .call(makeAnnotations);
+
+
 //second graph
 
 d3.select("#analysis2").on("click", function() {
         d3.selectAll("circle").remove();
+        d3.selectAll(".annotations").remove();
         updateGraph2();
     });
 
@@ -119,8 +145,35 @@ d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").select
   .html("Make: " + data1[i].Make);
   })
   .on("mouseout", function() {tooltip.style("opacity",0)});
+  
+  
+const annotations = [{
+    note: {
+        label: "Diesel cars have medium fuel efficiency.",
+        title: "Diesel",
+        wrap: 100
+            },
+    color: ["#F01B0F"],
+    x:200,
+    y:180,
+    dx: 30, 
+    dy: 30
+}];
+
+const makeAnnotations = d3.annotation()
+                          .type(d3.annotationLabel)
+                          .notePadding(15)
+                          .annotations(annotations);
+                          
+d3.select("svg")
+         .append("g")
+          .attr("class", "annotation-group")
+          .style("font-size", 9)
+          .call(makeAnnotations);
 
 }
+  
+
 
 
 //third graph
@@ -198,9 +251,32 @@ d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").select
   })
   .on("mouseout", function() {tooltip.style("opacity",0)});
 
+
+const annotations = [{
+    note: {
+        label: "Gasoline cars have the worst fuel efficiency.",
+        title: "Gasoline",
+        wrap: 100
+            },
+    color: ["#71c7ec"],
+    x:200,
+    y:180,
+    dx: 30, 
+    dy: 30
+}];
+
+const makeAnnotations = d3.annotation()
+                          .type(d3.annotationLabel)
+                          .notePadding(15)
+                          .annotations(annotations);
+                          
+d3.select("svg")
+         .append("g")
+          .attr("class", "annotation-group")
+          .style("font-size", 9)
+          .call(makeAnnotations);
+
 }
-
-
 
 }
 
